@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", () => {
     scrollTrigger: {
       trigger: ".landing_hero_section",
       start: "top top",
-      end: "bottom top",
+      end: "bottom center",
       scrub: true,
       invalidateOnRefresh: true
     }
