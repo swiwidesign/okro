@@ -53,5 +53,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // All start states applied — reveal every [data-flicker] element (CSS in <head>)
+  document.documentElement.setAttribute("data-flicker-ready", "");
+
   window.addEventListener("load", () => ScrollTrigger.refresh());
+  // Webfonts settle after load and can shift the trigger bounds
+  document.fonts?.ready.then(() => ScrollTrigger.refresh());
 });
