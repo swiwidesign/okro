@@ -28,22 +28,36 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // LANDING
-  gsap.from('[data-logo="home"]', {
-    width: "42.06rem",
-    top: "50%",
-    bottom: "auto",
-    color: "var(--_theme---text)",
-    mixBlendMode: "normal",
-    yPercent: -65,
-    ease: "none",
-    scrollTrigger: {
-      trigger: ".landing_hero_section",
-      start: "top top",
-      end: "bottom center",
-      scrub: true,
-      invalidateOnRefresh: true
-    }
-  });
+  const homeLogo = document.querySelector('[data-logo="home"]');
+
+  if (homeLogo) {
+    // mix-blend-mode can't be interpolated, so it's toggled at the end of the
+    // scrub instead of tweened. Read it off CSS before GSAP writes inline styles.
+    const logoBlend = getComputedStyle(homeLogo).mixBlendMode;
+    const setBlend = (on) =>
+      gsap.set(homeLogo, { mixBlendMode: on ? logoBlend : "normal" });
+
+    setBlend(false);
+
+    gsap.from(homeLogo, {
+      width: "42.06rem",
+      top: "50%",
+      bottom: "auto",
+      color: "var(--_theme---text)",
+      yPercent: -65,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".landing_hero_section",
+        start: "top top",
+        end: "bottom center",
+        scrub: true,
+        invalidateOnRefresh: true,
+        onLeave: () => setBlend(true),
+        onEnterBack: () => setBlend(false),
+        onRefresh: (self) => setBlend(self.progress === 1)
+      }
+    });
+  }
 
   window.addEventListener("load", () => ScrollTrigger.refresh());
 });
