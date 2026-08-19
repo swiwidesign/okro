@@ -28,36 +28,28 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // LANDING
-  const homeLogo = document.querySelector('[data-logo="home"]');
+  const logo = '[data-logo="home"]';
 
-  if (homeLogo) {
-    // mix-blend-mode can't be interpolated, so it's toggled at the end of the
-    // scrub instead of tweened. Read it off CSS before GSAP writes inline styles.
-    const logoBlend = getComputedStyle(homeLogo).mixBlendMode;
-    const setBlend = (on) =>
-      gsap.set(homeLogo, { mixBlendMode: on ? logoBlend : "normal" });
+  gsap.set(logo, { mixBlendMode: "normal" });
 
-    setBlend(false);
-
-    gsap.from(homeLogo, {
-      width: "42.06rem",
-      top: "50%",
-      bottom: "auto",
-      color: "var(--_theme---text)",
-      yPercent: -65,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".landing_hero_section",
-        start: "top top",
-        end: "bottom center",
-        scrub: true,
-        invalidateOnRefresh: true,
-        onLeave: () => setBlend(true),
-        onEnterBack: () => setBlend(false),
-        onRefresh: (self) => setBlend(self.progress === 1)
-      }
-    });
-  }
+  gsap.from(logo, {
+    width: "42.06rem",
+    top: "50%",
+    bottom: "auto",
+    color: "var(--_theme---text)",
+    yPercent: -65,
+    ease: "none",
+    scrollTrigger: {
+      trigger: ".landing_hero_section",
+      start: "top top",
+      end: "bottom center",
+      scrub: true,
+      invalidateOnRefresh: true,
+      // mix-blend-mode can't be tweened, so flip it once the scrub is done
+      onLeave: () => gsap.set(logo, { mixBlendMode: "difference" }),
+      onEnterBack: () => gsap.set(logo, { mixBlendMode: "normal" })
+    }
+  });
 
   window.addEventListener("load", () => ScrollTrigger.refresh());
 });
