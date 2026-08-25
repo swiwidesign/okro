@@ -38,9 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gsap.to(logo, {
         width: "7.75rem",
-        marginTop: "0vh",
-        yPercent: 0,
-        bottom: "auto",
+
         ease: "none",
         scrollTrigger: {
             trigger: ".landing_hero_section",
