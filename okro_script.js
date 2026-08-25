@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = '[data-logo="True"]';
 
   // Start in the pre-scroll state: theme text colour, no blending
-  gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
+  gsap.set(logo, { width: "20rem", mixBlendMode: "normal", color: "var(--_theme---text)" });
 
   gsap.to(logo, {
     width: 124,
