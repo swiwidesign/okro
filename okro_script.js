@@ -31,12 +31,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = '[data-logo="True"]';
 
   // Start in the pre-scroll state: theme text colour, no blending
-  gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
+  gsap.set(logo, { mixBlendMode: "difference", color: "white" });
 
   gsap.to(logo, {
     width: "7.75rem",
     top: 20,
-    transform: "translate(0px, 0px)",
+    yPercent: 0,
     bottom: "auto",
     ease: "none",
     scrollTrigger: {
@@ -47,9 +47,9 @@ window.addEventListener("DOMContentLoaded", () => {
       invalidateOnRefresh: true,
       // Blend mode and colour both flip once, after the scrub is done
       onLeave: () =>
-        gsap.set(logo, { mixBlendMode: "difference", clearProps: "color" }),
+        gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" }),
       onEnterBack: () =>
-        gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" })
+        gsap.set(logo, { mixBlendMode: "difference", color: "white" })
     }
   });
 
