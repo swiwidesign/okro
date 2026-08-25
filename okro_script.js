@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gsap.to(logo, {
         width: "7.75rem",
-        marginTop: "0vh",
+        top: "var(--site--margin)",
         yPercent: 0,
         bottom: "auto",
         ease: "none",
