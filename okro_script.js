@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
 
   gsap.to(logo, {
-    width: 124,
+    width: "7.75rem",
     top: "var(--site--margin)",
     transform: "translate(0px, 0px)",
     bottom: "auto",
