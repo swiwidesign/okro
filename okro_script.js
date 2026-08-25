@@ -1,58 +1,40 @@
 window.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(ScrollTrigger);
 
-    let lenis;
-
-    // LENIS
+    // Skip Lenis inside the Webflow Editor
     if (Webflow.env("editor") === undefined) {
-        lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            lerp: 0.1,
-            wheelMultiplier: 0.7,
-            infinite: false,
-            gestureOrientation: "vertical",
-            normalizeWheel: false,
-            smoothTouch: false
+        const lenis = new Lenis({
+            autoRaf: false
         });
 
         lenis.on("scroll", ScrollTrigger.update);
 
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+        gsap.ticker.add((time) => {
 
-        requestAnimationFrame(raf);
-    }
+            lenis.raf(time * 1000);
 
-    gsap.ticker.lagSmoothing(0);
-
-    document.querySelectorAll("[data-lenis-stop]").forEach((el) =>
-        el.addEventListener("click", () => {
-            if (lenis) lenis.stop();
-        })
-    );
-
-    document.querySelectorAll("[data-lenis-start]").forEach((el) =>
-        el.addEventListener("click", () => {
-            if (lenis) lenis.start();
-        })
-    );
-
-    // Lumos nav checkbox
-    const lenisToggle = document.querySelector("[data-lenis-toggle]");
-
-    if (lenisToggle) {
-        lenisToggle.addEventListener("change", () => {
-            if (!lenis) return;
-
-            lenisToggle.checked ? lenis.stop() : lenis.start();
         });
+        gsap.ticker.lagSmoothing(0);
+
+        document.querySelectorAll("[data-lenis-stop]").forEach((el) =>
+            el.addEventListener("click", () => lenis.stop())
+        );
+        document.querySelectorAll("[data-lenis-start]").forEach((el) =>
+            el.addEventListener("click", () => lenis.start())
+        );
+
+        // Lumos nav is a checkbox — listen for change, not click
+        const lenisToggle = document.querySelector("[data-lenis-toggle]");
+        if (lenisToggle) {
+            lenisToggle.addEventListener("change", () => {
+                lenisToggle.checked ? lenis.stop() : lenis.start();
+            });
+        }
     }
 
     // LANDING
     const logo = '[data-logo="True"]';
+
 
     gsap.to(logo, {
         width: "7.75rem",
@@ -60,38 +42,30 @@ window.addEventListener("DOMContentLoaded", () => {
         yPercent: 0,
         bottom: "auto",
         ease: "none",
-
         scrollTrigger: {
             trigger: ".landing_hero_section",
             start: "top top",
             end: "bottom center",
             scrub: true,
             invalidateOnRefresh: true,
-
-            onLeave: () => {
+            // Blend mode and colour both flip once, after the scrub is done
+            onLeave: () =>
                 gsap.set(logo, {
                     mixBlendMode: "difference",
-                    color: "var(--_theme---text)"
-                });
-            },
-
-            onEnterBack: () => {
+                    color: "var(--_theme---background)"
+                }),
+            onEnterBack: () =>
                 gsap.set(logo, {
                     mixBlendMode: "normal",
                     color: "var(--_theme---text)"
-                });
-            }
+                })
         }
     });
 
-    // Reveal flicker elements
+    // All start states applied — reveal every [data-flicker] element (CSS in <head>)
     document.documentElement.setAttribute("data-flicker-ready", "");
 
-    window.addEventListener("load", () => {
-        ScrollTrigger.refresh();
-    });
-
-    document.fonts?.ready.then(() => {
-        ScrollTrigger.refresh();
-    });
+    window.addEventListener("load", () => ScrollTrigger.refresh());
+    // Webfonts settle after load and can shift the trigger bounds
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
 });
