@@ -31,12 +31,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = '[data-logo="True"]';
 
   // Start in the pre-scroll state: theme text colour, no blending
-  gsap.set(logo, { width: "20rem", mixBlendMode: "normal", color: "var(--_theme---text)" });
+  gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
 
   gsap.to(logo, {
     width: 124,
     top: "var(--site--margin)",
-    yPercent: 0,
+    transform: "translate(0px, 0px)",
     bottom: "auto",
     ease: "none",
     scrollTrigger: {
