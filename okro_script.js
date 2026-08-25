@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
     width: "7.75rem",
     top: "var(--site--margin)",
     bottom: "auto",
-    yPercent: -65,
+    yPercent: 0,
     ease: "none",
     scrollTrigger: {
       trigger: ".landing_hero_section",
