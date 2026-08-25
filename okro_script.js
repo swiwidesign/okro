@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // LANDING
-  const logo = '[data-logo="home"]';
+  const logo = '[data-logo="Ja"]';
 
   // Start in the pre-scroll state: theme text colour, no blending
   gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
