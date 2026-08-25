@@ -8,7 +8,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+
+gsap.ticker.add((time) => {
+
+  lenis.raf(time * 1000);
+
+});
     gsap.ticker.lagSmoothing(0);
 
     document.querySelectorAll("[data-lenis-stop]").forEach((el) =>
@@ -31,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = '[data-logo="True"]';
 
   gsap.to(logo, {
-    scale: 1,
+    width: "7.75rem",
     top: 20,
     yPercent: 0,
     bottom: "auto",
@@ -44,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {
       invalidateOnRefresh: true,
       // Blend mode and colour both flip once, after the scrub is done
       onLeave: () =>
-        gsap.set(logo, { mixBlendMode: "difference", color: "white" }),
+        gsap.set(logo, { mixBlendMode: "difference", color: "var(--_theme---text)" }),
       onEnterBack: () =>
         gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" })
     }
