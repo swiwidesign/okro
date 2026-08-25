@@ -34,10 +34,15 @@ gsap.ticker.add((time) => {
 
   // LANDING
   const logo = '[data-logo="True"]';
+    const margin = getComputedStyle(document.documentElement)
+
+  .getPropertyValue("--site--margin")
+
+  .trim();
 
   gsap.to(logo, {
     width: "7.75rem",
-    top: "var(--site--margin)",
+    top: margin,
     yPercent: 0,
     bottom: "auto",
     ease: "none",
