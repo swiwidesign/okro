@@ -34,9 +34,9 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
 
   gsap.to(logo, {
-    width: "7.75rem",
+    width: 124,
     top: "var(--site--margin)",
-      yPercent: 0,
+    yPercent: 0,
     bottom: "auto",
     ease: "none",
     scrollTrigger: {
