@@ -69,27 +69,12 @@ window.addEventListener("DOMContentLoaded", () => {
         marginTop: "0vh",
         yPercent: 0,
         ease: "none",
-
         scrollTrigger: {
             trigger: ".landing_hero_section",
             start: "top top",
             end: "bottom center",
             scrub: true,
-            invalidateOnRefresh: true,
 
-            onLeave: () => {
-                gsap.set(logo, {
-                    mixBlendMode: "difference",
-                    color: "var(--_theme---background)"
-                });
-            },
-
-            onEnterBack: () => {
-                gsap.set(logo, {
-                    mixBlendMode: "normal",
-                    color: "var(--_theme---text)"
-                });
-            }
         }
     });
 
