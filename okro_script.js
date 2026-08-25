@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = '[data-logo="True"]';
 
   gsap.to(logo, {
-    width: "7.75rem",
+    scale: 1,
     top: 20,
     yPercent: 0,
     bottom: "auto",
