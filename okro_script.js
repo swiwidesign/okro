@@ -94,15 +94,6 @@ window.addEventListener("DOMContentLoaded", () => {
         // --------------------------------------------------
         // Set initial state BEFORE animation
         // --------------------------------------------------
-
-        gsap.set(logo, {
-            width: "7.75rem",
-            marginTop: "0vh",
-            yPercent: 0,
-            bottom: "auto"
-        });
-
-
         // --------------------------------------------------
         // Logo movement
         // --------------------------------------------------
