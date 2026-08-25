@@ -33,9 +33,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // Start in the pre-scroll state: theme text colour, no blending
   gsap.set(logo, { mixBlendMode: "normal", color: "var(--_theme---text)" });
 
-  gsap.from(logo, {
-    width: "42.06rem",
-    top: "50%",
+  gsap.to(logo, {
+    width: "7.75rem",
+    top: "var(--site--margin)",
     bottom: "auto",
     yPercent: -65,
     ease: "none",
