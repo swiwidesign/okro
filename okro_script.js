@@ -38,14 +38,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gsap.to(logo, {
         width: "7.75rem",
-        top: "var(--site--margin)",
+        marginTop: "0vh",
         yPercent: 0,
         bottom: "auto",
         ease: "none",
         scrollTrigger: {
             trigger: ".landing_hero_section",
             start: "top top",
-            end: "bottom center",
+            end: "bottom top",
             scrub: true,
             invalidateOnRefresh: true,
             // Blend mode and colour both flip once, after the scrub is done
