@@ -1,72 +1,124 @@
 window.addEventListener("DOMContentLoaded", () => {
+
+    // --------------------------------------------------
+    // GSAP
+    // --------------------------------------------------
+
     gsap.registerPlugin(ScrollTrigger);
 
-    // Initialize a new Lenis instance for smooth scrolling
-    const lenis = new Lenis();
 
-    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
-    lenis.on('scroll', ScrollTrigger.update);
+    // --------------------------------------------------
+    // LENIS
+    // --------------------------------------------------
 
-    // Add Lenis's requestAnimationFrame (raf) method to GSAP's ticker
-    // This ensures Lenis's smooth scroll animation updates on each GSAP tick
-    gsap.ticker.add((time) => {
-        lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+    const lenis = new Lenis({
+        autoRaf: false
     });
 
-    // Disable lag smoothing in GSAP to prevent any delay in scroll animations
+    // Keep ScrollTrigger in sync with Lenis
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Drive Lenis from GSAP's ticker
+    gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+    });
+
+    // Prevent GSAP from adding its own lag compensation
     gsap.ticker.lagSmoothing(0);
 
 
-    document.querySelectorAll("[data-lenis-stop]").forEach((el) =>
-        el.addEventListener("click", () => lenis.stop())
-    );
-    document.querySelectorAll("[data-lenis-start]").forEach((el) =>
-        el.addEventListener("click", () => lenis.start())
-    );
+    // --------------------------------------------------
+    // LENIS CONTROLS
+    // --------------------------------------------------
 
-    // Lumos nav is a checkbox — listen for change, not click
+    document.querySelectorAll("[data-lenis-stop]").forEach((el) => {
+        el.addEventListener("click", () => {
+            lenis.stop();
+        });
+    });
+
+    document.querySelectorAll("[data-lenis-start]").forEach((el) => {
+        el.addEventListener("click", () => {
+            lenis.start();
+        });
+    });
+
+
+    // Lumos nav checkbox
     const lenisToggle = document.querySelector("[data-lenis-toggle]");
+
     if (lenisToggle) {
         lenisToggle.addEventListener("change", () => {
-            lenisToggle.checked ? lenis.stop() : lenis.start();
+            if (lenisToggle.checked) {
+                lenis.stop();
+            } else {
+                lenis.start();
+            }
         });
     }
-}
-
-// LANDING
-const logo = '[data-logo="True"]';
 
 
-gsap.to(logo, {
-    width: "7.75rem",
-    marginTop: "0vh",
-    yPercent: 0,
-    bottom: "auto",
-    ease: "none",
-    scrollTrigger: {
-        trigger: ".landing_hero_section",
-        start: "top top",
-        end: "bottom center",
-        scrub: true,
-        invalidateOnRefresh: true,
-        // Blend mode and colour both flip once, after the scrub is done
-        onLeave: () =>
-            gsap.set(logo, {
-                mixBlendMode: "difference",
-                color: "var(--_theme---background)"
-            }),
-        onEnterBack: () =>
-            gsap.set(logo, {
-                mixBlendMode: "normal",
-                color: "var(--_theme---text)"
-            })
+    // --------------------------------------------------
+    // LANDING
+    // --------------------------------------------------
+
+    const logo = '[data-logo="True"]';
+
+    gsap.to(logo, {
+        width: "7.75rem",
+        marginTop: "0vh",
+        yPercent: 0,
+        bottom: "auto",
+        ease: "none",
+
+        scrollTrigger: {
+            trigger: ".landing_hero_section",
+            start: "top top",
+            end: "bottom center",
+            scrub: true,
+            invalidateOnRefresh: true,
+
+            onLeave: () => {
+                gsap.set(logo, {
+                    mixBlendMode: "difference",
+                    color: "var(--_theme---background)"
+                });
+            },
+
+            onEnterBack: () => {
+                gsap.set(logo, {
+                    mixBlendMode: "normal",
+                    color: "var(--_theme---text)"
+                });
+            }
+        }
+    });
+
+
+    // --------------------------------------------------
+    // FLICKER
+    // --------------------------------------------------
+
+    // Tell CSS that GSAP/Lenis are ready
+    document.documentElement.setAttribute(
+        "data-flicker-ready",
+        ""
+    );
+
+
+    // --------------------------------------------------
+    // REFRESH
+    // --------------------------------------------------
+
+    window.addEventListener("load", () => {
+        ScrollTrigger.refresh();
+    });
+
+    // Refresh once fonts have settled
+    if (document.fonts) {
+        document.fonts.ready.then(() => {
+            ScrollTrigger.refresh();
+        });
     }
-});
 
-// All start states applied — reveal every [data-flicker] element (CSS in <head>)
-document.documentElement.setAttribute("data-flicker-ready", "");
-
-window.addEventListener("load", () => ScrollTrigger.refresh());
-// Webfonts settle after load and can shift the trigger bounds
-document.fonts?.ready.then(() => ScrollTrigger.refresh());
 });
