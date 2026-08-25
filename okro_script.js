@@ -1,7 +1,7 @@
 window.addEventListener("DOMContentLoaded", () => {
 
     // ==================================================
-    // WEBFLOW EDITOR CHECK
+    // WEBFLOW EDITOR
     // ==================================================
 
     if (Webflow.env("editor") !== undefined) {
@@ -43,7 +43,6 @@ window.addEventListener("DOMContentLoaded", () => {
         lenis.raf(time * 1000);
     });
 
-    // Disable GSAP lag smoothing
     gsap.ticker.lagSmoothing(0);
 
 
@@ -51,7 +50,6 @@ window.addEventListener("DOMContentLoaded", () => {
     // LENIS CONTROLS
     // ==================================================
 
-    // Stop Lenis
     document.querySelectorAll("[data-lenis-stop]").forEach((el) => {
         el.addEventListener("click", () => {
             lenis.stop();
@@ -59,7 +57,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    // Start Lenis
     document.querySelectorAll("[data-lenis-start]").forEach((el) => {
         el.addEventListener("click", () => {
             lenis.start();
@@ -67,86 +64,137 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    // Lumos / checkbox toggle
+    // Lumos checkbox toggle
     const lenisToggle = document.querySelector("[data-lenis-toggle]");
 
     if (lenisToggle) {
         lenisToggle.addEventListener("change", () => {
+
             if (lenisToggle.checked) {
                 lenis.stop();
             } else {
                 lenis.start();
             }
+
         });
     }
 
 
     // ==================================================
-    // LANDING
+    // LANDING LOGO
     // ==================================================
 
-    const logo = '[data-logo="True"]';
+    const logo = document.querySelector('[data-logo="True"]');
+    const landingHero = document.querySelector(".landing_hero_section");
 
-    gsap.to(logo, {
-        width: "7.75rem",
-        marginTop: "0vh",
-        yPercent: 0,
-        bottom: "auto",
-        ease: "none",
 
-        scrollTrigger: {
-            trigger: ".landing_hero_section",
+    if (logo && landingHero) {
+
+
+        // --------------------------------------------------
+        // Set initial state BEFORE animation
+        // --------------------------------------------------
+
+        gsap.set(logo, {
+            width: "7.75rem",
+            marginTop: "0vh",
+            yPercent: 0,
+            bottom: "auto"
+        });
+
+
+        // --------------------------------------------------
+        // Logo movement
+        // --------------------------------------------------
+
+        gsap.to(logo, {
+            width: "7.75rem",
+            marginTop: "0vh",
+            yPercent: 0,
+            bottom: "auto",
+            ease: "none",
+
+            scrollTrigger: {
+                trigger: landingHero,
+
+                start: "top top",
+                end: "bottom center",
+
+                scrub: true,
+
+                invalidateOnRefresh: true
+            }
+        });
+
+
+        // --------------------------------------------------
+        // Logo appearance
+        // --------------------------------------------------
+
+        ScrollTrigger.create({
+            trigger: landingHero,
+
             start: "top top",
             end: "bottom center",
-            scrub: true,
-            invalidateOnRefresh: true,
 
-            // Change logo appearance after leaving hero
-            onLeave: () => {
-                gsap.set(logo, {
-                    mixBlendMode: "difference",
-                    color: "var(--_theme---background)"
-                });
-            },
+            onEnter: () => {
 
-            // Restore logo appearance when scrolling back
-            onEnterBack: () => {
                 gsap.set(logo, {
                     mixBlendMode: "normal",
                     color: "var(--_theme---text)"
                 });
+
+            },
+
+            onLeave: () => {
+
+                gsap.set(logo, {
+                    mixBlendMode: "difference",
+                    color: "var(--_theme---background)"
+                });
+
+            },
+
+            onEnterBack: () => {
+
+                gsap.set(logo, {
+                    mixBlendMode: "normal",
+                    color: "var(--_theme---text)"
+                });
+
+            },
+
+            onLeaveBack: () => {
+
+                gsap.set(logo, {
+                    mixBlendMode: "normal",
+                    color: "var(--_theme---text)"
+                });
+
             }
-        }
-    });
+        });
+
+    }
 
 
     // ==================================================
-    // FLICKER REVEAL
+    // SCROLLTRIGGER REFRESH
     // ==================================================
 
-    document.documentElement.setAttribute(
-        "data-flicker-ready",
-        ""
-    );
-
-
-    // ==================================================
-    // REFRESH SCROLLTRIGGER
-    // ==================================================
-
-    // Initial refresh
     ScrollTrigger.refresh();
 
 
-    // Refresh after everything has loaded
+    // Refresh after page load
     window.addEventListener("load", () => {
         ScrollTrigger.refresh();
     });
 
 
-    // Refresh after webfonts have settled
-    document.fonts?.ready.then(() => {
-        ScrollTrigger.refresh();
-    });
+    // Refresh after fonts have loaded
+    if (document.fonts) {
+        document.fonts.ready.then(() => {
+            ScrollTrigger.refresh();
+        });
+    }
 
 });
