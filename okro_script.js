@@ -37,7 +37,7 @@ gsap.ticker.add((time) => {
 
   gsap.to(logo, {
     width: "7.75rem",
-    top: 20,
+    top: "var(--site--margin)",
     yPercent: 0,
     bottom: "auto",
     ease: "none",
