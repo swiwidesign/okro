@@ -62,33 +62,41 @@ window.addEventListener("DOMContentLoaded", () => {
     // LANDING
     // --------------------------------------------------
 
-    // The wrap shrinks from hero size back to its nav size — the values
-    // below are the start, GSAP animates back to what .nav_logo_wrap says.
-    // The .is-landing SVG sits on top and fades out to reveal the nav one.
-
     const logo = document.querySelector('[data-logo="True"]');
+    const hero = document.querySelector(".landing_hero_section");
 
-    if (logo) {
+    if (logo && hero) {
+
         gsap.timeline({
             scrollTrigger: {
-                trigger: ".landing_hero_section",
+                trigger: hero,
                 start: "top top",
-                end: "bottom center",
+                end: "bottom top",
                 scrub: true,
-                invalidateOnRefresh: true
+                invalidateOnRefresh: true,
+
+                // At 100% — the hero's bottom hits the top of the viewport —
+                // the look flips in one step. .is-landing carries the hero
+                // look (normal blend, dark); without it the nav look
+                // (mix-blend-mode: difference) applies.
+                onLeave: () => logo.classList.remove("is-landing"),
+                onEnterBack: () => logo.classList.add("is-landing"),
+
+                // Reload mid-page: match whichever side of the flip we're on.
+                onRefresh: (self) => logo.classList.toggle("is-landing", self.progress < 1)
             }
         })
+        // First half: shrink from hero size into the nav slot. The values
+        // here are the start — GSAP animates back to what .nav_logo_wrap says.
         .from(logo, {
             width: "42.06rem",
             top: "50%",
             yPercent: -65,
-            ease: "none"
-        }, 0)
-        .fromTo(logo.querySelector(".nav_logo_svg.is-landing"),
-            { opacity: 1 },
-            { opacity: 0, ease: "none" },
-            0
-        );
+            ease: "none",
+            duration: 1
+        })
+        // Second half: hold, while the rest of the hero scrolls away.
+        .to({}, { duration: 1 });
     }
 
 
