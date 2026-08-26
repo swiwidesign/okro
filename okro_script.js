@@ -100,7 +100,7 @@ window.addEventListener("DOMContentLoaded", () => {
             // 15% → 70%: the byline slides down and tilts out of the way.
             .to(byline, {
                 yPercent: 150,
-                rotation: "10deg",
+                rotation: 10,
                 ease: "none",
                 duration: 0.55
             }, 0.15)
