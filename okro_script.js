@@ -97,7 +97,8 @@ window.addEventListener("DOMContentLoaded", () => {
             })
             // Alongside it, the byline slides down out of the way.
             .to(byline, {
-                yPercent: 105,
+                yPercent: 120,
+                rotation: "5deg",
                 ease: "none",
                 duration: 2
             }, 0.5)
