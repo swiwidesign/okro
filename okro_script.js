@@ -67,6 +67,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (logo && hero) {
 
+        // Scoped to the hero — there's a second .byline_wrap in the footer.
+        const byline = hero.querySelector(".byline_wrap");
+
         // Hero look, applied up front: solid dark, no blending.
         // .nav_logo_wrap's own look (difference) is the nav look.
         gsap.set(logo, {
@@ -92,6 +95,12 @@ window.addEventListener("DOMContentLoaded", () => {
                 ease: "none",
                 duration: 1
             })
+            // Alongside it, the byline slides down out of the way.
+            .to(byline, {
+                yPercent: 105,
+                ease: "none",
+                duration: 1
+            }, 0)
             // Second half: hold, while the rest of the hero scrolls away.
             .to({}, {
                 duration: 1
