@@ -62,70 +62,29 @@ window.addEventListener("DOMContentLoaded", () => {
     // LANDING
     // --------------------------------------------------
 
+    // .is-landing only carries colour + mix-blend-mode now.
+    // The values below are the starting point — GSAP animates
+    // back to whatever .nav_logo_wrap says.
+
     const logo = document.querySelector('[data-logo="True"]');
-    const hero = document.querySelector(".landing_hero_section");
 
-    if (logo && hero) {
-
-        // Where the logo ends up: whatever .nav_logo_wrap looks like
-        // with .is-landing switched off. Measured, so the Webflow
-        // classes stay the only place those values live.
-        let resting = {};
-
-        function measure() {
-            gsap.set(logo, { clearProps: "width,y,color,mixBlendMode" });
-
-            // GSAP reads the CSS translate(0, -65%) as pixels,
-            // so the target has to be pixels too.
-            const startY = gsap.getProperty(logo, "y");
-            const startTop = logo.getBoundingClientRect().top;
-
-            logo.classList.remove("is-landing");
-
-            const box = logo.getBoundingClientRect();
-            const css = getComputedStyle(logo);
-
-            resting = {
-                width: box.width,
-                y: startY + (box.top - startTop),
-                color: css.color,
-                blend: css.mixBlendMode
-            };
-
-            logo.classList.add("is-landing");
-        }
-
-        // Colours don't scrub, they flip: .is-landing's own colours over
-        // the hero, .nav_logo_wrap's once past it.
-        function syncColors(self) {
-            gsap.set(logo, self.progress >= 1
-                ? { color: resting.color, mixBlendMode: resting.blend }
-                : { clearProps: "color,mixBlendMode" }
-            );
-        }
-
-        measure();
-
-        const landing = gsap.to(logo, {
-            width: () => resting.width,
-            y: () => resting.y,
+    if (logo) {
+        gsap.from(logo, {
+            width: "42.06rem",
+            top: "50%",
+            yPercent: -65,
             ease: "none",
             scrollTrigger: {
-                trigger: hero,
+                trigger: ".landing_hero_section",
                 start: "top top",
                 end: "bottom center",
                 scrub: true,
                 invalidateOnRefresh: true,
 
-                onRefreshInit: measure,
-                onLeave: syncColors,
-                onEnterBack: syncColors
+                onLeave: () => logo.classList.remove("is-landing"),
+                onEnterBack: () => logo.classList.add("is-landing")
             }
         });
-
-        // Those callbacks don't fire on a refresh (or a reload mid-page).
-        syncColors(landing.scrollTrigger);
-        ScrollTrigger.addEventListener("refresh", () => syncColors(landing.scrollTrigger));
     }
 
 
