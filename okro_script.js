@@ -67,6 +67,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (logo && hero) {
 
+        // Hero look, applied up front: solid dark, no blending.
+        // .nav_logo_wrap's own look (difference) is the nav look.
+        gsap.set(logo, {
+            mixBlendMode: "normal",
+            color: "var(--swatch--dark)"
+        });
+
         gsap.timeline({
                 scrollTrigger: {
                     trigger: hero,
@@ -89,8 +96,7 @@ window.addEventListener("DOMContentLoaded", () => {
             .to({}, {
                 duration: 1
             })
-            // At 100%: swap the hero look (.is-landing — normal blend, dark)
-            // for the nav look. Scrubbing back up reverts it on its own.
+            // At 100%: back to the nav look. Scrubbing up reverts it on its own.
             .set(logo, {
                 mixBlendMode: "difference",
                 color: "var(--swatch--light-2)"
