@@ -77,6 +77,8 @@ window.addEventListener("DOMContentLoaded", () => {
             color: "var(--swatch--dark)"
         });
 
+        // The timeline is 1 unit long, so every position and duration below
+        // reads straight off as a fraction of the hero scroll.
         gsap.timeline({
                 scrollTrigger: {
                     trigger: hero,
@@ -86,31 +88,28 @@ window.addEventListener("DOMContentLoaded", () => {
                     invalidateOnRefresh: true
                 }
             })
-            // First half: shrink from hero size into the nav slot. The values
+            // 0 → 50%: shrink from hero size into the nav slot. The values
             // here are the start — GSAP animates back to what .nav_logo_wrap says.
             .from(logo, {
                 width: "42.06rem",
                 top: "50%",
                 yPercent: -65,
                 ease: "none",
-                duration: 1
-            })
-            // Alongside it, the byline slides down out of the way.
+                duration: 0.5
+            }, 0)
+            // 15% → 70%: the byline slides down and tilts out of the way.
             .to(byline, {
-                yPercent: 180,
+                yPercent: 150,
                 rotation: "10deg",
                 ease: "none",
-                duration: 2
-            }, 0.5)
-            // Second half: hold, while the rest of the hero scrolls away.
-            .to({}, {
-                duration: 1
-            })
-            // At 100%: back to the nav look. Scrubbing up reverts it on its own.
+                duration: 0.55
+            }, 0.15)
+            // 100%: back to the nav look. Scrubbing up reverts it on its own.
+            // This also pins the timeline's length, so nothing above can drift.
             .set(logo, {
                 mixBlendMode: "difference",
                 color: "var(--swatch--light-2)"
-            });
+            }, 1);
     }
 
 
