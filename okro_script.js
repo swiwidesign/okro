@@ -62,29 +62,33 @@ window.addEventListener("DOMContentLoaded", () => {
     // LANDING
     // --------------------------------------------------
 
-    // .is-landing only carries colour + mix-blend-mode now.
-    // The values below are the starting point — GSAP animates
-    // back to whatever .nav_logo_wrap says.
+    // The wrap shrinks from hero size back to its nav size — the values
+    // below are the start, GSAP animates back to what .nav_logo_wrap says.
+    // The .is-landing SVG sits on top and fades out to reveal the nav one.
 
     const logo = document.querySelector('[data-logo="True"]');
 
     if (logo) {
-        gsap.from(logo, {
-            width: "42.06rem",
-            top: "50%",
-            yPercent: -65,
-            ease: "none",
+        gsap.timeline({
             scrollTrigger: {
                 trigger: ".landing_hero_section",
                 start: "top top",
                 end: "bottom center",
                 scrub: true,
-                invalidateOnRefresh: true,
-
-                onLeave: () => logo.classList.remove("is-landing"),
-                onEnterBack: () => logo.classList.add("is-landing")
+                invalidateOnRefresh: true
             }
-        });
+        })
+        .from(logo, {
+            width: "42.06rem",
+            top: "50%",
+            yPercent: -65,
+            ease: "none"
+        }, 0)
+        .fromTo(logo.querySelector(".nav_logo_svg.is-landing"),
+            { opacity: 1 },
+            { opacity: 0, ease: "none" },
+            0
+        );
     }
 
 
