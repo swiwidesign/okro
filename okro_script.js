@@ -74,7 +74,21 @@ window.addEventListener("DOMContentLoaded", () => {
             start: "top top",
             end: "bottom center",
             scrub: true,
+            invalidateOnRefresh: true,
 
+            onLeave: () => {
+                gsap.set(logo, {
+                    mixBlendMode: "difference",
+                    color: "var(--_theme---background)"
+                });
+            },
+
+            onEnterBack: () => {
+                gsap.set(logo, {
+                    mixBlendMode: "normal",
+                    color: "var(--_theme---text)"
+                });
+            }
         }
     });
 
