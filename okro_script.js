@@ -62,35 +62,86 @@ window.addEventListener("DOMContentLoaded", () => {
     // LANDING
     // --------------------------------------------------
 
-    const logo = '[data-logo="True"]';
+    const logo = document.querySelector('[data-logo="True"]');
+    const heroSection = document.querySelector(".landing_hero_section");
 
-    gsap.to(logo, {
-        width: "7.75rem",
-        marginTop: "0vh",
-        yPercent: 0,
-        ease: "none",
-        scrollTrigger: {
-            trigger: ".landing_hero_section",
-            start: "top top",
-            end: "bottom center",
-            scrub: true,
-            invalidateOnRefresh: true,
+    if (logo && heroSection) {
 
-            onLeave: () => {
+        const LANDING = "is-landing";
+
+        // The resting state is whatever .nav_logo_wrap says, so nothing
+        // from Webflow gets duplicated here.
+        let endWidth, endY, endColor, endBlend;
+
+        const measure = () => {
+            gsap.set(logo, { clearProps: "width,y,yPercent" });
+
+            const startRect = logo.getBoundingClientRect();
+
+            // GSAP reads the CSS translate(0, -65%) as a pixel offset,
+            // so the end value has to be a pixel offset too.
+            const startY = gsap.getProperty(logo, "y");
+
+            // Read the resting state off a copy, so the live element keeps
+            // the colours its current scroll position implies.
+            const probe = logo.cloneNode(false);
+            probe.classList.remove(LANDING);
+            probe.removeAttribute("style");
+            probe.removeAttribute("data-logo");
+            probe.style.visibility = "hidden";
+            logo.parentNode.appendChild(probe);
+
+            const probeRect = probe.getBoundingClientRect();
+            const probeStyle = getComputedStyle(probe);
+
+            endWidth = probeRect.width;
+            endY = startY + (probeRect.top - startRect.top);
+            endColor = probeStyle.color;
+            endBlend = probeStyle.mixBlendMode;
+
+            probe.remove();
+        };
+
+        measure();
+
+        const setResting = (resting) => {
+            if (resting) {
                 gsap.set(logo, {
-                    mixBlendMode: "difference",
-                    color: "var(--_theme---background)"
+                    color: endColor,
+                    mixBlendMode: endBlend
                 });
-            },
-
-            onEnterBack: () => {
-                gsap.set(logo, {
-                    mixBlendMode: "normal",
-                    color: "var(--_theme---text)"
-                });
+            } else {
+                gsap.set(logo, { clearProps: "color,mixBlendMode" });
             }
-        }
-    });
+        };
+
+        const landingTween = gsap.to(logo, {
+            width: () => endWidth,
+            y: () => endY,
+            ease: "none",
+            scrollTrigger: {
+                trigger: heroSection,
+                start: "top top",
+                end: "bottom center",
+                scrub: true,
+                invalidateOnRefresh: true,
+
+                onRefreshInit: measure,
+
+                onLeave: () => setResting(true),
+                onEnterBack: () => setResting(false)
+            }
+        });
+
+        // Callbacks don't fire on a refresh, so sync the colours to
+        // whatever the current scroll position is (e.g. reload mid-page).
+        const syncResting = () => {
+            setResting(landingTween.scrollTrigger.progress >= 1);
+        };
+
+        syncResting();
+        ScrollTrigger.addEventListener("refresh", syncResting);
+    }
 
 
     // --------------------------------------------------
