@@ -99,7 +99,7 @@ window.addEventListener("DOMContentLoaded", () => {
             .to(byline, {
                 yPercent: 105,
                 ease: "none",
-                duration: 1
+                duration: 2
             }, 1)
             // Second half: hold, while the rest of the hero scrolls away.
             .to({}, {
