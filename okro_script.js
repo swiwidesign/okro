@@ -100,7 +100,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 yPercent: 105,
                 ease: "none",
                 duration: 2
-            }, 1)
+            }, 0.5)
             // Second half: hold, while the rest of the hero scrolls away.
             .to({}, {
                 duration: 1
