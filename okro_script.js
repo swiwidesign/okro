@@ -73,6 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     start: "top top",
                     end: "bottom top",
                     scrub: true,
+                    invalidateOnRefresh: true
                 }
             })
             // First half: shrink from hero size into the nav slot. The values
@@ -85,9 +86,15 @@ window.addEventListener("DOMContentLoaded", () => {
                 duration: 1
             })
             // Second half: hold, while the rest of the hero scrolls away.
+            .to({}, {
+                duration: 1
+            })
+            // At 100%: swap the hero look (.is-landing — normal blend, dark)
+            // for the nav look. Scrubbing back up reverts it on its own.
             .set(logo, {
-                mixBlendMode: "difference"
-            }, -= "100%");
+                mixBlendMode: "difference",
+                color: "var(--swatch--light-2)"
+            });
     }
 
 
