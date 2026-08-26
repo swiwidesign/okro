@@ -87,7 +87,7 @@ window.addEventListener("DOMContentLoaded", () => {
             // Second half: hold, while the rest of the hero scrolls away.
             .set(logo, {
                 mixBlendMode: "difference"
-            });
+            }, -= "100%");
     }
 
 
