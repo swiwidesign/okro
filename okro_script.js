@@ -123,7 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
     gsap.timeline({
             scrollTrigger: {
                 trigger: footer,
-                start: "top top", // Triggers when the bottom of the footer hits the bottom of the viewport
+                start: "top center", // Triggers when the bottom of the footer hits the bottom of the viewport
                 toggleActions: "play none none reverse", // Plays on scroll down, reverses on scroll up
                 invalidateOnRefresh: true
             }
