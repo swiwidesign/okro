@@ -113,30 +113,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    // --------------------------------------------------
-    // FOOTER
-    // --------------------------------------------------
-    const footer = document.querySelector(".footer_section_complete");
-    const footerbyline = document.querySelector('[footer-byline]');
-
-    gsap.timeline({
-            scrollTrigger: {
-                trigger: footer,
-                start: "top center",
-                end: "bottom bottom",
-                scrub: true,
-                invalidateOnRefresh: true
-            }
-        })
-        .from(footerbyline, {
-            yPercent: 150,
-            rotation: 10,
-            ease: "none",
-            duration: 0.55
-        }, );
-
-
     // --------------------------------------------------
     // FLICKER
     // --------------------------------------------------
