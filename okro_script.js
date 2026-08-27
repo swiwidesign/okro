@@ -118,7 +118,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // FOOTER
     // --------------------------------------------------
     const footer = document.querySelector(".footer_section_complete");
-    const footerbyline = document.querySelector('[footer-byline]');
+    const footerbyline = document.querySelector('[data-footer="byline"]');
 
     gsap.timeline({
             scrollTrigger: {
