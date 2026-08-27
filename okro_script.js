@@ -123,7 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
     gsap.timeline({
             scrollTrigger: {
                 trigger: footer,
-                start: "bottom bottom", // Triggers when the bottom of the footer hits the bottom of the viewport
+                start: "top top", // Triggers when the bottom of the footer hits the bottom of the viewport
                 toggleActions: "play none none reverse", // Plays on scroll down, reverses on scroll up
                 invalidateOnRefresh: true
             }
@@ -132,7 +132,7 @@ window.addEventListener("DOMContentLoaded", () => {
             yPercent: 150,
             rotation: 10,
             ease: "power2.out", // Changed from "none" for a smoother, more natural slide-up
-            duration: 0.55
+            duration: 1
         });
 
 
