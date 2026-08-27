@@ -124,7 +124,7 @@ window.addEventListener("DOMContentLoaded", () => {
             scrollTrigger: {
                 trigger: footer,
                 start: "top center", // Triggers when the bottom of the footer hits the bottom of the viewport
-                toggleActions: "play none none reverse", // Plays on scroll down, reverses on scroll up
+                toggleActions: "play reverse none reverse", // Plays on scroll down, reverses on scroll up
                 invalidateOnRefresh: true
             }
         })
