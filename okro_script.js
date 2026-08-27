@@ -123,9 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
     gsap.timeline({
             scrollTrigger: {
                 trigger: footer,
-                start: "top center",
-                end: "bottom bottom",
-                scrub: true,
+                start: "bottom bottom",
                 invalidateOnRefresh: true
             }
         })
