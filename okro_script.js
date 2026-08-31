@@ -69,6 +69,20 @@ window.addEventListener("DOMContentLoaded", () => {
         // Scoped to the hero — there's a second .byline_wrap in the footer.
         const byline = hero.querySelector(".byline_wrap");
 
+        // .nav_logo_wrap's resting top, resolved to px. GSAP can't interpolate
+        // var(--site--margin) — it mangles the clamp() inside it mid-tween.
+        // Re-read on every refresh, so it follows the viewport.
+        function navLogoTop() {
+            const probe = document.createElement("div");
+            probe.style.cssText = "position:fixed;visibility:hidden;top:var(--site--margin)";
+            logo.parentNode.appendChild(probe);
+
+            const top = getComputedStyle(probe).top;
+            probe.remove();
+
+            return top;
+        }
+
         // Hero look, applied up front: solid dark, no blending.
         // .nav_logo_wrap's own look (difference) is the nav look.
         gsap.set(logo, {
@@ -87,12 +101,13 @@ window.addEventListener("DOMContentLoaded", () => {
                     invalidateOnRefresh: true
                 }
             })
-            // 0 → 50%: shrink from hero size into the nav slot. The values
-            // here are the start — GSAP animates back to what .nav_logo_wrap says.
+            // 0 → 50%: shrink from .is-landing's hero size into the nav slot.
+            // y (not yPercent) — GSAP reads .is-landing's translate(0, -65%)
+            // as pixels, so yPercent reads 0 and animating it does nothing.
             .to(logo, {
                 width: "7.75rem",
-                top: "var(--site--margin)"
-                yPercent: 0,
+                top: navLogoTop,
+                y: 0,
                 ease: "none",
                 duration: 0.5
             }, 0)
@@ -112,27 +127,32 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
     // --------------------------------------------------
     // FOOTER
     // --------------------------------------------------
-    const footer = document.querySelector(".footer_section_complete");
-    const footerbyline = document.querySelector('[data-footer="byline"]');
 
-    gsap.timeline({
-            scrollTrigger: {
-                trigger: footer,
-                start: "top center", // Triggers when the bottom of the footer hits the bottom of the viewport
-                toggleActions: "play none none reverse", // Plays on scroll down, reverses on scroll up
-                invalidateOnRefresh: true
-            }
-        })
-        .from(footerbyline, {
-            yPercent: 150,
-            rotation: 10,
-            ease: "power2.out", // Changed from "none" for a smoother, more natural slide-up
-            duration: 1
-        });
+    const footer = document.querySelector(".footer_section_complete");
+    const footerByline = document.querySelector('[data-footer="byline"]');
+
+    if (footer && footerByline) {
+
+        gsap.timeline({
+                scrollTrigger: {
+                    trigger: footer,
+                    // Fires when the top of the footer reaches the middle
+                    // of the viewport.
+                    start: "top center",
+                    toggleActions: "play none none reverse",
+                    invalidateOnRefresh: true
+                }
+            })
+            .from(footerByline, {
+                yPercent: 150,
+                rotation: 10,
+                ease: "power2.out",
+                duration: 1
+            });
+    }
 
 
     // --------------------------------------------------
