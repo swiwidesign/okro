@@ -69,20 +69,6 @@ window.addEventListener("DOMContentLoaded", () => {
         // Scoped to the hero — there's a second .byline_wrap in the footer.
         const byline = hero.querySelector(".byline_wrap");
 
-        // .nav_logo_wrap's resting top, resolved to px. GSAP can't interpolate
-        // var(--site--margin) — it mangles the clamp() inside it mid-tween.
-        // Re-read on every refresh, so it follows the viewport.
-        function navLogoTop() {
-            const probe = document.createElement("div");
-            probe.style.cssText = "position:fixed;visibility:hidden;top:var(--site--margin)";
-            logo.parentNode.appendChild(probe);
-
-            const top = getComputedStyle(probe).top;
-            probe.remove();
-
-            return top;
-        }
-
         // Hero look, applied up front: solid dark, no blending.
         // .nav_logo_wrap's own look (difference) is the nav look.
         gsap.set(logo, {
@@ -100,13 +86,12 @@ window.addEventListener("DOMContentLoaded", () => {
                     scrub: true
                 }
             })
-            // 0 → 50%: shrink from .is-landing's hero size into the nav slot.
-            // y (not yPercent) — GSAP reads .is-landing's translate(0, -65%)
-            // as pixels, so yPercent reads 0 and animating it does nothing.
-            .to(logo, {
-                width: "7.75rem",
-                top: navLogoTop,
-                y: 0,
+            // 0 → 50%: shrink from hero size into the nav slot. The values
+            // here are the start — GSAP animates back to what .nav_logo_wrap says.
+            .from(logo, {
+                width: "42.06rem",
+                top: "50%",
+                yPercent: -65,
                 ease: "none",
                 duration: 0.5
             }, 0)
