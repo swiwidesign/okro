@@ -97,8 +97,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     trigger: hero,
                     start: "top top",
                     end: "bottom top",
-                    scrub: true,
-                    invalidateOnRefresh: true
+                    scrub: true
                 }
             })
             // 0 → 50%: shrink from .is-landing's hero size into the nav slot.
