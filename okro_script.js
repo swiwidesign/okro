@@ -67,7 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (logo && hero) {
 
         // Scoped to the hero — there's a second .byline_wrap in the footer.
-        const byline = hero.querySelector(".byline_wrap");
+        const byline = hero.querySelector('[data-byline="hero"]');
 
         // The timeline is 1 unit long, so every position and duration below
         // reads straight off as a fraction of the hero scroll.
@@ -103,7 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // --------------------------------------------------
 
     const footer = document.querySelector(".footer_section_complete");
-    const footerByline = document.querySelector('[data-footer="byline"]');
+    const footerByline = document.querySelector('[data-byline="footer"]');
 
     if (footer && footerByline) {
 
