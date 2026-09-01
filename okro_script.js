@@ -74,8 +74,8 @@ window.addEventListener("DOMContentLoaded", () => {
         gsap.timeline({
                 scrollTrigger: {
                     trigger: hero,
-                    start: "top top",
-                    end: "bottom top",
+                    start: "clamp(top top)",
+                    end: "clamp(bottom top)",
                     scrub: true
                 }
             })
