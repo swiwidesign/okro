@@ -82,7 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
             // 0 → 50%: shrink from hero size into the nav slot. The values
             // here are the start — GSAP animates back to what .nav_logo_wrap says.
             .from(logo, {
-                width: "42.06rem",
+                width: "44rem",
                 top: "50%",
                 yPercent: -65,
                 ease: "none",
