@@ -94,7 +94,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 rotation: 10,
                 ease: "none",
                 duration: 0.55
-            }, 0.15);
+            }, 0.25);
     }
 
 
