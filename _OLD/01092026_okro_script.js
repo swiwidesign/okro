@@ -69,6 +69,13 @@ window.addEventListener("DOMContentLoaded", () => {
         // Scoped to the hero — there's a second .byline_wrap in the footer.
         const byline = hero.querySelector(".byline_wrap");
 
+        // Hero look, applied up front: solid dark, no blending.
+        // .nav_logo_wrap's own look (difference) is the nav look.
+        gsap.set(logo, {
+            mixBlendMode: "normal",
+            color: "var(--swatch--dark)"
+        });
+
         // The timeline is 1 unit long, so every position and duration below
         // reads straight off as a fraction of the hero scroll.
         gsap.timeline({
@@ -94,7 +101,13 @@ window.addEventListener("DOMContentLoaded", () => {
                 rotation: 10,
                 ease: "none",
                 duration: 0.55
-            }, 0.15);
+            }, 0.15)
+            // 100%: back to the nav look. Scrubbing up reverts it on its own.
+            // This also pins the timeline's length, so nothing above can drift.
+            .set(logo, {
+                mixBlendMode: "difference",
+                color: "var(--swatch--light-2)"
+            }, 1);
     }
 
 
