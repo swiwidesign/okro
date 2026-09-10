@@ -8,6 +8,34 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     // --------------------------------------------------
+    // BREAKPOINTS
+    // --------------------------------------------------
+
+    // Mirrors the Webflow breakpoints — keep these in sync with the designer.
+    // Use them anywhere below via mm.add(...), e.g.
+    //
+    //   mm.add(BREAKPOINTS, (ctx) => {
+    //       const { isTabletUp } = ctx.conditions;
+    //       if (!isTabletUp) return;
+    //       ...tweens...
+    //       return () => { /* cleanup */ };
+    //   });
+    //
+    // The callback re-runs whenever any condition flips, and GSAP reverts
+    // everything it created in there automatically.
+    const BREAKPOINTS = {
+        isDesktop: "(min-width: 992px)",
+        isTablet: "(max-width: 991px) and (min-width: 768px)",
+        isTabletUp: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+        reduceMotion: "(prefers-reduced-motion: reduce)"
+    };
+
+    // One shared matchMedia for the whole file — a single revert point.
+    const mm = gsap.matchMedia();
+
+
+    // --------------------------------------------------
     // LENIS
     // --------------------------------------------------
 
@@ -137,8 +165,13 @@ window.addEventListener("DOMContentLoaded", () => {
     const hSticky = hWrap && hWrap.querySelector('[data-hscroll="sticky"]');
     const hTrack = hWrap && hWrap.querySelector('[data-hscroll="track"]');
 
-    // Runs only above the stacking breakpoint — check the value in Webflow.
-    if (hWrap && hSticky && hTrack) gsap.matchMedia().add("(min-width: 992px)", () => {
+    // Runs on tablet and up — below that the track stacks.
+    if (hWrap && hSticky && hTrack) mm.add(BREAKPOINTS, (ctx) => {
+
+        const {
+            isTabletUp
+        } = ctx.conditions;
+        if (!isTabletUp) return;
 
         // The track measures one viewport narrower than its content (margin-right:
         // -100vw on .track_layout), which is exactly how far xPercent: -100 travels.
