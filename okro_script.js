@@ -133,31 +133,41 @@ window.addEventListener("DOMContentLoaded", () => {
     // HORIZONTAL
     // --------------------------------------------------
 
-    // Makes scroll timing feel more natural
-    function setTrackHeights() {
-        $(".section-height").each(function (index) {
-            let trackWidth = $(this).find(".track").outerWidth();
-            $(this).height(trackWidth);
+    const hWrap = document.querySelector('[data-hscroll="wrap"]');
+    const hSticky = hWrap && hWrap.querySelector('[data-hscroll="sticky"]');
+    const hTrack = hWrap && hWrap.querySelector('[data-hscroll="track"]');
+
+    // Runs only above the stacking breakpoint — check the value in Webflow.
+    if (hWrap && hSticky && hTrack) gsap.matchMedia().add("(min-width: 992px)", () => {
+
+        // The track measures one viewport narrower than its content (margin-right:
+        // -100vw on .track_layout), which is exactly how far xPercent: -100 travels.
+        // Adding the sticky height back gives a 1:1 scroll-to-travel ratio.
+        const measure = () => {
+            hWrap.style.height = hTrack.offsetWidth + hSticky.offsetHeight + "px";
+        };
+
+        // refreshInit runs the measurement inside ScrollTrigger's own cycle, so it
+        // stays correct on resize and after images and fonts settle.
+        ScrollTrigger.addEventListener("refreshInit", measure);
+        measure();
+
+        gsap.to(hTrack, {
+            xPercent: -100,
+            ease: "none",
+            scrollTrigger: {
+                trigger: hWrap,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true
+            }
         });
-    }
-    setTrackHeights();
-    window.addEventListener("resize", function () {
-        setTrackHeights();
-    });
-    // Horizontal scroll
-    let tlMain = gsap.timeline({
-        scrollTrigger: {
-            trigger: ".section-height",
-            start: "top top",
-            end: "98% bottom",
-            scrub: 1
-        }
-    }).to(".track", {
-        xPercent: -100,
-        ease: "none"
-    });
 
-
+        return () => {
+            ScrollTrigger.removeEventListener("refreshInit", measure);
+            hWrap.style.height = "";
+        };
+    });
 
 
 
