@@ -126,6 +126,42 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
+
+
+    // --------------------------------------------------
+    // HORIZONTAL
+    // --------------------------------------------------
+
+    // Makes scroll timing feel more natural
+    function setTrackHeights() {
+        $(".section-height").each(function (index) {
+            let trackWidth = $(this).find(".track").outerWidth();
+            $(this).height(trackWidth);
+        });
+    }
+    setTrackHeights();
+    window.addEventListener("resize", function () {
+        setTrackHeights();
+    });
+    // Horizontal scroll
+    let tlMain = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".section-height",
+            start: "top top",
+            end: "98% bottom",
+            scrub: 1
+        }
+    }).to(".track", {
+        xPercent: -100,
+        ease: "none"
+    });
+
+
+
+
+
+
     // --------------------------------------------------
     // FLICKER
     // --------------------------------------------------
