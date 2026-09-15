@@ -195,7 +195,6 @@ window.addEventListener("DOMContentLoaded", () => {
         });
 
         // Pins hold at the left edge while their parent slides past.
-        // (CSS sticky can't do this, because the track moves by transform.)
         hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
             const parent = pin.parentElement;
 
