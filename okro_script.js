@@ -161,33 +161,28 @@ window.addEventListener("DOMContentLoaded", () => {
     // HORIZONTAL
     // --------------------------------------------------
 
+    // The sticky box stays on screen (CSS sticky) while the track slides left.
     const hWrap = document.querySelector('[data-hscroll="wrap"]');
-    const hSticky = hWrap && hWrap.querySelector('[data-hscroll="sticky"]');
-    const hTrack = hWrap && hWrap.querySelector('[data-hscroll="track"]');
 
-    // Runs on tablet and up — below that the track stacks.
-    if (hWrap && hSticky && hTrack) mm.add(BREAKPOINTS, (ctx) => {
+    if (hWrap) mm.add(BREAKPOINTS, (ctx) => {
+        if (!ctx.conditions.isTabletUp) return;
 
-        const {
-            isTabletUp
-        } = ctx.conditions;
-        if (!isTabletUp) return;
+        const sticky = hWrap.querySelector('[data-hscroll="sticky"]');
+        const track = hWrap.querySelector('[data-hscroll="track"]');
 
-        // Travel is however much wider the track's content is than the sticky
-        // viewport, so the last panel ends flush with the right edge.
-        // Adding the sticky height back gives a 1:1 scroll-to-travel ratio.
-        const distance = () => hTrack.scrollWidth - hSticky.clientWidth;
+        // How far the track slides: its full width minus what fits on screen.
+        const distance = () => track.scrollWidth - sticky.clientWidth;
 
-        const measure = () => {
-            hWrap.style.height = distance() + hSticky.offsetHeight + "px";
+        // Make the section tall enough that 1px of scroll = 1px of slide.
+        // Runs again on every refresh (resize, images and fonts loading).
+        const setHeight = () => {
+            hWrap.style.height = distance() + sticky.offsetHeight + "px";
         };
+        setHeight();
+        ScrollTrigger.addEventListener("refreshInit", setHeight);
 
-        // refreshInit runs the measurement inside ScrollTrigger's own cycle, so it
-        // stays correct on resize and after images and fonts settle.
-        ScrollTrigger.addEventListener("refreshInit", measure);
-        measure();
-
-        const hTween = gsap.to(hTrack, {
+        // Slide the track left while scrolling through the section.
+        const slide = gsap.to(track, {
             x: () => -distance(),
             ease: "none",
             scrollTrigger: {
@@ -199,33 +194,28 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // CSS sticky can't work here: the track moves by transform, not by
-        // scrolling. Instead each pin counter-moves so it holds at its parent's
-        // left padding until it reaches the parent's right edge.
+        // Pins hold at the left edge while their parent slides past.
+        // (CSS sticky can't do this, because the track moves by transform.)
         hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
-            const box = pin.parentElement;
-
-            const travel = () => {
-                const cs = getComputedStyle(box);
-                return Math.max(0, box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - pin.offsetWidth);
-            };
+            const parent = pin.parentElement;
 
             gsap.to(pin, {
-                x: () => travel(),
+                x: () => parent.offsetWidth - sticky.clientWidth,
                 ease: "none",
                 scrollTrigger: {
-                    trigger: box,
-                    containerAnimation: hTween,
+                    trigger: parent,
+                    containerAnimation: slide,
                     start: "left left",
-                    end: () => "+=" + travel(),
+                    end: "right right",
                     scrub: true,
                     invalidateOnRefresh: true
                 }
             });
         });
 
+        // Below tablet: remove the height again.
         return () => {
-            ScrollTrigger.removeEventListener("refreshInit", measure);
+            ScrollTrigger.removeEventListener("refreshInit", setHeight);
             hWrap.style.height = "";
         };
     });
