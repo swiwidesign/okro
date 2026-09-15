@@ -173,7 +173,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         // Short stop before the slide starts: 30% of a screen of scrolling.
         // Set to 0 to start sliding right away.
-        const hold = () => window.innerHeight * 0.3;
+        const hold = () => window.innerHeight * 0.15;
 
         // Pin the section for the stop + the slide.
         const pinned = ScrollTrigger.create({
