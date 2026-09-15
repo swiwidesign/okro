@@ -158,18 +158,22 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Pins hold at the left edge while their parent slides past.
+        // Pins hold at the left edge while their parent slides past, and let go
+        // when the parent's right edge reaches them.
         hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
             const parent = pin.parentElement;
 
+            // Where the pin's right edge sits on screen while it's pinned
+            const pinRight = () => pin.offsetLeft + pin.offsetWidth;
+
             gsap.to(pin, {
-                x: () => parent.offsetWidth - hWrap.clientWidth,
+                x: () => parent.offsetWidth - pinRight(),
                 ease: "none",
                 scrollTrigger: {
                     trigger: parent,
                     containerAnimation: slide,
                     start: "left left",
-                    end: "right right",
+                    end: () => "right " + pinRight() + "px",
                     scrub: true,
                     invalidateOnRefresh: true
                 }
