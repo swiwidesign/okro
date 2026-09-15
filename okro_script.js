@@ -180,46 +180,39 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Scales pin at the left edge and get revealed from the top-left corner
-        // (clip-path, 40% → 100%). Their section must be wider than the screen
-        // (e.g. 200vw) — the extra width is how long they stay pinned.
+        // Scales pin at the left edge, then get revealed from the top-left corner
+        // (clip-path, 40% → 100%) while pinned.
+        // Their section must be wider than the screen (e.g. 200vw) — the extra
+        // width is how long they stay pinned.
         hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
             const section = el.closest(".u-section");
 
-            // Counter-move so it stays in place while the section slides past
-            gsap.to(el, {
-                x: () => section.offsetWidth - hWrap.clientWidth,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    start: "left left",
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
-
-            // Where the visible (clipped, 40%) part's right edge sits inside its section
-            const visibleRight = () => el.offsetLeft + el.offsetWidth * 0.4;
-
-            // Reveal once the visible part is fully on screen (its right edge
-            // reaches the screen's right edge).
-            // inset(top right bottom left): 60% cut from right and bottom = 40% visible
-            gsap.fromTo(el, {
-                clipPath: "inset(0% 60% 60% 0%)"
-            }, {
-                clipPath: "inset(0% 0% 0% 0%)",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    start: () => "left " + (hWrap.clientWidth - visibleRight()) + "px",
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
+            gsap.timeline({
+                    defaults: {
+                        ease: "none"
+                    },
+                    scrollTrigger: {
+                        trigger: section,
+                        containerAnimation: slide,
+                        start: "left right",
+                        end: "right right",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                })
+                // Counter-move so it stays in place while the section slides past
+                .to(el, {
+                    x: () => section.offsetWidth - hWrap.clientWidth,
+                    duration: 1
+                })
+                // ...and reveal it from the top-left corner at the same time.
+                // inset(top right bottom left): 60% cut from right and bottom = 40% visible
+                .fromTo(el, {
+                    clipPath: "inset(0% 60% 60% 0%)"
+                }, {
+                    clipPath: "inset(0% 0% 0% 0%)",
+                    duration: 1
+                }, "<");
         });
     });
 
