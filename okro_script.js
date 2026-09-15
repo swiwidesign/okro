@@ -201,13 +201,15 @@ window.addEventListener("DOMContentLoaded", () => {
                 })
                 // Counter-move so it stays in place while the section slides past
                 .to(el, {
-                    x: () => section.offsetWidth - hWrap.clientWidth
+                    x: () => section.offsetWidth - hWrap.clientWidth,
+                    duration: 1
                 })
                 // ...and scale up at the same time
                 .fromTo(el, {
                     scale: 0.3
                 }, {
-                    scale: 1
+                    scale: 1,
+                    duration: 0.6
                 }, "<");
         });
     });
