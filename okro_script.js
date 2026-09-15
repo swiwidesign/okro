@@ -206,7 +206,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 })
                 // ...and scale up at the same time
                 .fromTo(el, {
-                    scale: 0.3
+                    scale: 0.4
                 }, {
                     scale: 1,
                     duration: 1
