@@ -173,11 +173,13 @@ window.addEventListener("DOMContentLoaded", () => {
         } = ctx.conditions;
         if (!isTabletUp) return;
 
-        // The track measures one viewport narrower than its content (margin-right:
-        // -100vw on .track_layout), which is exactly how far xPercent: -100 travels.
+        // Travel is however much wider the track's content is than the sticky
+        // viewport, so the last panel ends flush with the right edge.
         // Adding the sticky height back gives a 1:1 scroll-to-travel ratio.
+        const distance = () => hTrack.scrollWidth - hSticky.clientWidth;
+
         const measure = () => {
-            hWrap.style.height = hTrack.offsetWidth + hSticky.offsetHeight + "px";
+            hWrap.style.height = distance() + hSticky.offsetHeight + "px";
         };
 
         // refreshInit runs the measurement inside ScrollTrigger's own cycle, so it
@@ -186,13 +188,14 @@ window.addEventListener("DOMContentLoaded", () => {
         measure();
 
         gsap.to(hTrack, {
-            xPercent: -100,
+            x: () => -distance(),
             ease: "none",
             scrollTrigger: {
                 trigger: hWrap,
                 start: "top top",
                 end: "bottom bottom",
-                scrub: true
+                scrub: true,
+                invalidateOnRefresh: true
             }
         });
 
