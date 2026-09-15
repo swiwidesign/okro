@@ -195,7 +195,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         containerAnimation: slide,
                         start: "left left",
                         end: "right right",
-                        scrub: true,
+                        scrub: 1,
                         invalidateOnRefresh: true
                     }
                 })
