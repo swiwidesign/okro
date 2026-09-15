@@ -175,6 +175,25 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
+
+        // Scales grow from 30% to 100% (from the center) while sliding in:
+        // from entering on the right until they're fully on screen.
+        hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
+            gsap.fromTo(el, {
+                scale: 0.3
+            }, {
+                scale: 1,
+                ease: "none",
+                scrollTrigger: {
+                    // Measure the section, not the scaled element itself.
+                    trigger: el.closest(".u-section"),
+                    containerAnimation: slide,
+                    start: "left right",
+                    end: "right right",
+                    scrub: true
+                }
+            });
+        });
     });
 
 
