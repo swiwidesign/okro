@@ -209,7 +209,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     scale: 0.3
                 }, {
                     scale: 1,
-                    duration: 0.98
+                    duration: 1
                 }, "<");
         });
     });
