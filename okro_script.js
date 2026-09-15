@@ -180,7 +180,8 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Scales pin at the left edge, then grow from 30% to 100% while pinned.
+        // Scales pin at the left edge, then get revealed from the top-left corner
+        // (clip-path, 40% → 100%) while pinned.
         // Their section must be wider than the screen (e.g. 200vw) — the extra
         // width is how long they stay pinned.
         hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
@@ -204,11 +205,12 @@ window.addEventListener("DOMContentLoaded", () => {
                     x: () => section.offsetWidth - hWrap.clientWidth,
                     duration: 1
                 })
-                // ...and scale up at the same time
+                // ...and reveal it from the top-left corner at the same time.
+                // inset(top right bottom left): 60% cut from right and bottom = 40% visible
                 .fromTo(el, {
-                    scale: 0.4
+                    clipPath: "inset(0% 60% 60% 0%)"
                 }, {
-                    scale: 1,
+                    clipPath: "inset(0% 0% 0% 0%)",
                     duration: 1
                 }, "<");
         });
