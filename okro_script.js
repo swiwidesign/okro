@@ -194,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     scrollTrigger: {
                         trigger: section,
                         containerAnimation: slide,
-                        start: "left center",
+                        start: "left right",
                         end: "right right",
                         scrub: true,
                         invalidateOnRefresh: true
