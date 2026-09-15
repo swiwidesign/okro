@@ -179,11 +179,10 @@ window.addEventListener("DOMContentLoaded", () => {
             scrollTrigger: {
                 trigger: hWrap,
                 pin: true,
-                // .page_wrap is flex, where GSAP turns spacing off by default
                 pinSpacing: true,
                 start: "top top",
                 end: () => "+=" + distance(),
-                scrub: true,
+                scrub: 1,
                 invalidateOnRefresh: true
             }
         });
