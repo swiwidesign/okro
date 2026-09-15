@@ -153,7 +153,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 pinSpacing: true,
                 start: "top top",
                 end: () => "+=" + distance(),
-                scrub: 1,
+                scrub: true,
                 invalidateOnRefresh: true
             }
         });
