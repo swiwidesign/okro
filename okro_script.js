@@ -200,10 +200,11 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Where the image's right edge sits inside its section
-            const imageRight = () => el.offsetLeft + el.offsetWidth;
+            // Where the visible (clipped, 40%) part's right edge sits inside its section
+            const visibleRight = () => el.offsetLeft + el.offsetWidth * 0.4;
 
-            // Reveal once the image's right edge reaches the screen's right edge.
+            // Reveal once the visible part is fully on screen (its right edge
+            // reaches the screen's right edge).
             // inset(top right bottom left): 60% cut from right and bottom = 40% visible
             gsap.fromTo(el, {
                 clipPath: "inset(0% 60% 60% 0%)"
@@ -213,7 +214,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 scrollTrigger: {
                     trigger: section,
                     containerAnimation: slide,
-                    start: () => "left " + (hWrap.clientWidth - imageRight()) + "px",
+                    start: () => "left " + (hWrap.clientWidth - visibleRight()) + "px",
                     end: "right right",
                     scrub: true,
                     invalidateOnRefresh: true
