@@ -187,7 +187,7 @@ window.addEventListener("DOMContentLoaded", () => {
         ScrollTrigger.addEventListener("refreshInit", measure);
         measure();
 
-        gsap.to(hTrack, {
+        const hTween = gsap.to(hTrack, {
             x: () => -distance(),
             ease: "none",
             scrollTrigger: {
@@ -197,6 +197,31 @@ window.addEventListener("DOMContentLoaded", () => {
                 scrub: true,
                 invalidateOnRefresh: true
             }
+        });
+
+        // CSS sticky can't work here: the track moves by transform, not by
+        // scrolling. Instead each pin counter-moves so it holds at its parent's
+        // left padding until it reaches the parent's right edge.
+        hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
+            const box = pin.parentElement;
+
+            const travel = () => {
+                const cs = getComputedStyle(box);
+                return Math.max(0, box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - pin.offsetWidth);
+            };
+
+            gsap.to(pin, {
+                x: () => travel(),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: box,
+                    containerAnimation: hTween,
+                    start: "left left",
+                    end: () => "+=" + travel(),
+                    scrub: true,
+                    invalidateOnRefresh: true
+                }
+            });
         });
 
         return () => {
