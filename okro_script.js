@@ -171,17 +171,27 @@ window.addEventListener("DOMContentLoaded", () => {
         // How far the track slides: its full width minus the screen width.
         const distance = () => track.scrollWidth - hWrap.clientWidth;
 
-        // Pin the section and slide the track left while scrolling.
+        // Short stop before the slide starts: 30% of a screen of scrolling.
+        // Set to 0 to start sliding right away.
+        const hold = () => window.innerHeight * 0.3;
+
+        // Pin the section for the stop + the slide.
+        const pinned = ScrollTrigger.create({
+            trigger: hWrap,
+            pin: true,
+            pinSpacing: true,
+            start: "top top",
+            end: () => "+=" + (hold() + distance())
+        });
+
+        // Slide the track left once the stop is over, until the pin ends.
         // 1px of scroll = 1px of slide.
         const slide = gsap.to(track, {
             x: () => -distance(),
             ease: "none",
             scrollTrigger: {
-                trigger: hWrap,
-                pin: true,
-                pinSpacing: true,
-                start: "top top",
-                end: () => "+=" + distance(),
+                start: () => pinned.start + hold(),
+                end: () => pinned.end,
                 scrub: 1,
                 invalidateOnRefresh: true
             }
