@@ -126,6 +126,61 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
+    // --------------------------------------------------
+    // HORIZONTAL
+    // --------------------------------------------------
+
+    const hWrap = document.querySelector('[data-hscroll="wrap"]');
+
+    if (hWrap) mm.add(BREAKPOINTS, (ctx) => {
+        if (!ctx.conditions.isTabletUp) return;
+
+        const track = hWrap.querySelector('[data-hscroll="track"]');
+
+        // How far the track slides: its full width minus the screen width.
+        const distance = () => track.scrollWidth - hWrap.clientWidth;
+
+        // Pin the section and slide the track left while scrolling.
+        // 1px of scroll = 1px of slide; scrub: 1 eases the track in over 1s.
+        const slide = gsap.to(track, {
+            x: () => -distance(),
+            ease: "none",
+            scrollTrigger: {
+                trigger: hWrap,
+                pin: true,
+                // .page_wrap is flex, where GSAP turns spacing off by default
+                pinSpacing: true,
+                start: "top top",
+                end: () => "+=" + distance(),
+                scrub: 1,
+                invalidateOnRefresh: true
+            }
+        });
+
+        // Pins hold at the left edge while their parent slides past.
+        hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
+            const parent = pin.parentElement;
+
+            gsap.to(pin, {
+                x: () => parent.offsetWidth - hWrap.clientWidth,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: parent,
+                    containerAnimation: slide,
+                    start: "left left",
+                    end: "right right",
+                    scrub: true,
+                    invalidateOnRefresh: true
+                }
+            });
+        });
+    });
+
+
+
+
+
     // --------------------------------------------------
     // FOOTER
     // --------------------------------------------------
@@ -152,71 +207,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 duration: 1
             });
     }
-
-
-
-
-
-    // --------------------------------------------------
-    // HORIZONTAL
-    // --------------------------------------------------
-
-    const hWrap = document.querySelector('[data-hscroll="wrap"]');
-
-    if (hWrap) mm.add(BREAKPOINTS, (ctx) => {
-        if (!ctx.conditions.isTabletUp) return;
-
-        const track = hWrap.querySelector('[data-hscroll="track"]');
-
-        // How far the track slides: its full width minus the screen width.
-        const distance = () => track.scrollWidth - hWrap.clientWidth;
-
-        // Short stop before the slide starts: 30% of a screen of scrolling.
-        // Set to 0 to start sliding right away.
-        const hold = () => window.innerHeight * 0.15;
-
-        // Pin the section for the stop + the slide.
-        const pinned = ScrollTrigger.create({
-            trigger: hWrap,
-            pin: true,
-            pinSpacing: true,
-            start: "top top",
-            end: () => "+=" + (hold() + distance())
-        });
-
-        // Slide the track left once the stop is over, until the pin ends.
-        // 1px of scroll = 1px of slide.
-        const slide = gsap.to(track, {
-            x: () => -distance(),
-            ease: "none",
-            scrollTrigger: {
-                start: () => pinned.start + hold(),
-                end: () => pinned.end,
-                scrub: 1,
-                invalidateOnRefresh: true
-            }
-        });
-
-        // Pins hold at the left edge while their parent slides past.
-        hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
-            const parent = pin.parentElement;
-
-            gsap.to(pin, {
-                x: () => parent.offsetWidth - hWrap.clientWidth,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: parent,
-                    containerAnimation: slide,
-                    start: "left left",
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
-        });
-    });
-
-
 
 
     // --------------------------------------------------
