@@ -194,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     scrollTrigger: {
                         trigger: section,
                         containerAnimation: slide,
-                        start: "left right",
+                        start: "left 60%",
                         end: "right right",
                         scrub: true,
                         invalidateOnRefresh: true
@@ -208,7 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 // ...and reveal it from the top-left corner at the same time.
                 // inset(top right bottom left): 60% cut from right and bottom = 40% visible
                 .fromTo(el, {
-                    clipPath: "inset(0% 50% 50% 0%)"
+                    clipPath: "inset(0% 60% 60% 0%)"
                 }, {
                     clipPath: "inset(0% 0% 0% 0%)",
                     duration: 1
