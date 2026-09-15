@@ -176,23 +176,35 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Scales grow from 30% to 100% (from the center) while sliding in:
-        // from entering on the right until they're fully on screen.
+        // Scales pin at the left edge, then grow from 30% to 100% while pinned.
+        // Their section must be wider than the screen (e.g. 200vw) — the extra
+        // width is how long they stay pinned.
         hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
-            gsap.fromTo(el, {
-                scale: 0.3
-            }, {
-                scale: 1,
-                ease: "none",
-                scrollTrigger: {
-                    // Measure the section, not the scaled element itself.
-                    trigger: el.closest(".u-section"),
-                    containerAnimation: slide,
-                    start: "left right",
-                    end: "right right",
-                    scrub: true
-                }
-            });
+            const section = el.closest(".u-section");
+
+            gsap.timeline({
+                    defaults: {
+                        ease: "none"
+                    },
+                    scrollTrigger: {
+                        trigger: section,
+                        containerAnimation: slide,
+                        start: "left left",
+                        end: "right right",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                })
+                // Counter-move so it stays in place while the section slides past
+                .to(el, {
+                    x: () => section.offsetWidth - hWrap.clientWidth
+                })
+                // ...and scale up at the same time
+                .fromTo(el, {
+                    scale: 0.3
+                }, {
+                    scale: 1
+                }, "<");
         });
     });
 
