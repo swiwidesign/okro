@@ -161,34 +161,28 @@ window.addEventListener("DOMContentLoaded", () => {
     // HORIZONTAL
     // --------------------------------------------------
 
-    // The sticky box stays on screen (CSS sticky) while the track slides left.
     const hWrap = document.querySelector('[data-hscroll="wrap"]');
 
     if (hWrap) mm.add(BREAKPOINTS, (ctx) => {
         if (!ctx.conditions.isTabletUp) return;
 
-        const sticky = hWrap.querySelector('[data-hscroll="sticky"]');
         const track = hWrap.querySelector('[data-hscroll="track"]');
 
-        // How far the track slides: its full width minus what fits on screen.
-        const distance = () => track.scrollWidth - sticky.clientWidth;
+        // How far the track slides: its full width minus the screen width.
+        const distance = () => track.scrollWidth - hWrap.clientWidth;
 
-        // Make the section tall enough that 1px of scroll = 1px of slide.
-        // Runs again on every refresh (resize, images and fonts loading).
-        const setHeight = () => {
-            hWrap.style.height = distance() + sticky.offsetHeight + "px";
-        };
-        setHeight();
-        ScrollTrigger.addEventListener("refreshInit", setHeight);
-
-        // Slide the track left while scrolling through the section.
+        // Pin the section and slide the track left while scrolling.
+        // 1px of scroll = 1px of slide.
         const slide = gsap.to(track, {
             x: () => -distance(),
             ease: "none",
             scrollTrigger: {
                 trigger: hWrap,
+                pin: true,
+                // .page_wrap is flex, where GSAP turns spacing off by default
+                pinSpacing: true,
                 start: "top top",
-                end: "bottom bottom",
+                end: () => "+=" + distance(),
                 scrub: true,
                 invalidateOnRefresh: true
             }
@@ -199,7 +193,7 @@ window.addEventListener("DOMContentLoaded", () => {
             const parent = pin.parentElement;
 
             gsap.to(pin, {
-                x: () => parent.offsetWidth - sticky.clientWidth,
+                x: () => parent.offsetWidth - hWrap.clientWidth,
                 ease: "none",
                 scrollTrigger: {
                     trigger: parent,
@@ -211,12 +205,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
-
-        // Below tablet: remove the height again.
-        return () => {
-            ScrollTrigger.removeEventListener("refreshInit", setHeight);
-            hWrap.style.height = "";
-        };
     });
 
 
