@@ -131,93 +131,102 @@ window.addEventListener("DOMContentLoaded", () => {
     // HORIZONTAL
     // --------------------------------------------------
 
-    const hWrap = document.querySelector('[data-hscroll="wrap"]');
+    // Every section with data-hscroll="wrap" gets its own sideways scroll:
+    // the landing page scroller and every Image Scroller Section on a page.
+    // Below tablet nothing happens here (the Image Scroller cards stack with
+    // position: sticky instead — that's all CSS in Webflow).
+    const hWraps = document.querySelectorAll('[data-hscroll="wrap"]');
 
-    if (hWrap) mm.add(BREAKPOINTS, (ctx) => {
+    if (hWraps.length) mm.add(BREAKPOINTS, (ctx) => {
         if (!ctx.conditions.isTabletUp) return;
 
-        const track = hWrap.querySelector('[data-hscroll="track"]');
+        // Set up in page order, so stacked pins measure each other correctly
+        hWraps.forEach((hWrap) => {
+            const track = hWrap.querySelector('[data-hscroll="track"]');
 
-        // How far the track slides: its full width minus the screen width.
-        const distance = () => track.scrollWidth - hWrap.clientWidth;
+            // How far the track slides: whatever sticks out past its own right edge.
+            // Landing page: the screen edge. Image Scroller: the container edge,
+            // so the last card stops in line with the page grid.
+            const distance = () => track.scrollWidth - track.clientWidth;
 
-        // Pin the section and slide the track left while scrolling.
-        // 1px of scroll = 1px of slide; scrub: 1 eases the track in over 1s.
-        const slide = gsap.to(track, {
-            x: () => -distance(),
-            ease: "none",
-            scrollTrigger: {
-                trigger: hWrap,
-                pin: true,
-                // .page_wrap is flex, where GSAP turns spacing off by default
-                pinSpacing: true,
-                start: "top top",
-                end: () => "+=" + distance(),
-                scrub: true,
-                invalidateOnRefresh: true
-            }
-        });
-
-        // Pins hold at the left edge while their parent slides past, and let go
-        // when the parent's right edge reaches them.
-        hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
-            const parent = pin.parentElement;
-
-            // Where the pin's right edge sits on screen while it's pinned
-            const pinRight = () => pin.offsetLeft + pin.offsetWidth;
-
-            gsap.to(pin, {
-                x: () => parent.offsetWidth - pinRight(),
+            // Pin the section and slide the track left while scrolling.
+            // 1px of scroll = 1px of slide.
+            const slide = gsap.to(track, {
+                x: () => -distance(),
                 ease: "none",
                 scrollTrigger: {
-                    trigger: parent,
-                    containerAnimation: slide,
-                    start: "left left",
-                    end: () => "right " + pinRight() + "px",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
-        });
-
-        // Scales pin at the left edge, then get revealed from the top-left corner
-        // (clip-path, 40% → 100%).
-        // Their section must be wider than the screen (e.g. 200vw) — the extra
-        // width is how long they stay pinned.
-        hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
-            const section = el.closest(".u-section");
-
-            // Hold at the left edge while the section slides past.
-            // Must stay "left left" → "right right" so the counter-move matches.
-            gsap.to(el, {
-                x: () => section.offsetWidth - hWrap.clientWidth,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    start: "left left",
-                    end: "right right",
+                    trigger: hWrap,
+                    pin: true,
+                    // .page_wrap is flex, where GSAP turns spacing off by default
+                    pinSpacing: true,
+                    start: "top top",
+                    end: () => "+=" + distance(),
                     scrub: true,
                     invalidateOnRefresh: true
                 }
             });
 
-            // Reveal from the top-left corner. Tune start/end freely,
-            // e.g. start while it's still coming in, finish halfway through the hold.
-            // inset(top right bottom left): 60% cut from right and bottom = 40% visible
-            gsap.fromTo(el, {
-                clipPath: "inset(0% 60% 60% 0%)"
-            }, {
-                clipPath: "inset(0% 0% 0% 0%)",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    start: "left 40%",
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
+            // Pins hold at the left edge while their parent slides past, and let go
+            // when the parent's right edge reaches them.
+            hWrap.querySelectorAll('[data-hscroll="pin"]').forEach((pin) => {
+                const parent = pin.parentElement;
+
+                // Where the pin's right edge sits on screen while it's pinned
+                const pinRight = () => pin.offsetLeft + pin.offsetWidth;
+
+                gsap.to(pin, {
+                    x: () => parent.offsetWidth - pinRight(),
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: parent,
+                        containerAnimation: slide,
+                        start: "left left",
+                        end: () => "right " + pinRight() + "px",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
+            });
+
+            // Scales pin at the left edge, then get revealed from the top-left corner
+            // (clip-path, 40% → 100%).
+            // Their section must be wider than the screen (e.g. 200vw) — the extra
+            // width is how long they stay pinned.
+            hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
+                const section = el.closest(".u-section");
+
+                // Hold at the left edge while the section slides past.
+                // Must stay "left left" → "right right" so the counter-move matches.
+                gsap.to(el, {
+                    x: () => section.offsetWidth - hWrap.clientWidth,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: section,
+                        containerAnimation: slide,
+                        start: "left left",
+                        end: "right right",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
+
+                // Reveal from the top-left corner. Tune start/end freely,
+                // e.g. start while it's still coming in, finish halfway through the hold.
+                // inset(top right bottom left): 60% cut from right and bottom = 40% visible
+                gsap.fromTo(el, {
+                    clipPath: "inset(0% 60% 60% 0%)"
+                }, {
+                    clipPath: "inset(0% 0% 0% 0%)",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: section,
+                        containerAnimation: slide,
+                        start: "left 40%",
+                        end: "right right",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
             });
         });
     });
