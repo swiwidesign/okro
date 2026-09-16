@@ -194,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     scrollTrigger: {
                         trigger: section,
                         containerAnimation: slide,
-                        start: "left center",
+                        start: () => `left ${hWrap.clientWidth * 0.4}px`,
                         end: "right right",
                         scrub: true,
                         invalidateOnRefresh: true
