@@ -133,8 +133,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Every section with data-hscroll="wrap" gets its own sideways scroll:
     // the landing page scroller and every Image Scroller Section on a page.
-    // Below tablet nothing happens here (the Image Scroller cards stack with
-    // position: sticky instead — that's all CSS in Webflow).
+    // Below tablet nothing happens here (the Image Scroller cards become a
+    // native swipe row instead — that's all CSS in Webflow).
     const hWraps = document.querySelectorAll('[data-hscroll="wrap"]');
 
     if (hWraps.length) mm.add(BREAKPOINTS, (ctx) => {
