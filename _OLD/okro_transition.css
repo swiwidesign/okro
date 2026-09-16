@@ -1,0 +1,109 @@
+<style >
+/* View Transitions — paste into Site Settings → Custom Code (Footer) */
+
+/* Page Transition */
+@view-transition {
+    navigation: auto;
+}
+
+/* Root: ✏️ Custom (builder) */
+@keyframes vt-custom-old-translate {
+    0% {
+        translate: 0% 0%;
+    }
+
+    30% {
+        translate: 0% 0%;
+    }
+
+    100% {
+        translate: -100% 100%;
+    }
+}
+
+@keyframes vt-custom-old-rotate {
+    0% {
+        rotate: 0deg;
+    }
+
+    19% {
+        rotate: 0deg;
+    }
+
+    67% {
+        rotate: -10deg;
+    }
+
+    100% {
+        rotate: -10deg;
+    }
+}
+
+@keyframes vt-custom-old-scale {
+    0% {
+        scale: 1;
+    }
+
+    27% {
+        scale: 0.85;
+    }
+
+    100% {
+        scale: 0.85;
+    }
+}
+
+@keyframes vt-custom-new-translate {
+    0% {
+        translate: 100% 100%;
+    }
+
+    36.5% {
+        translate: 100% 100%;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    100% {
+        translate: 0% 0%;
+    }
+}
+
+@keyframes vt-custom-new-scale {
+    0% {
+        scale: 1;
+    }
+
+    100% {
+        scale: 1;
+    }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    transform-origin: center bottom;
+}
+
+::view-transition-old(root) {
+    animation:
+        vt-custom-old-translate 1500ms ease-in-out both,
+        vt-custom-old-rotate 1500ms ease-in-out both,
+        vt-custom-old-scale 1500ms ease-in-out both;
+}
+
+::view-transition-new(root) {
+    animation:
+        vt-custom-new-translate 1500ms ease-in-out both,
+        vt-custom-new-scale 1500ms ease-in-out both;
+}
+
+/* Accessibility: honour reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
+
+</style >
