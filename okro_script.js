@@ -180,39 +180,46 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Scales pin at the left edge, then get revealed from the top-left corner
-        // (clip-path, 40% → 100%) while pinned.
+        // Scales hold at the left edge while their section slides past, and get
+        // revealed from the top-left corner (clip-path, 40% → 100%).
         // Their section must be wider than the screen (e.g. 200vw) — the extra
-        // width is how long they stay pinned.
+        // width is how long they stay held.
         hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
             const section = el.closest(".u-section");
 
-            gsap.timeline({
-                    defaults: {
-                        ease: "none"
-                    },
-                    scrollTrigger: {
-                        trigger: section,
-                        containerAnimation: slide,
-                        start: () => `left ${hWrap.clientWidth * 0.4}px`,
-                        end: "right right",
-                        scrub: true,
-                        invalidateOnRefresh: true
-                    }
-                })
-                // Counter-move so it stays in place while the section slides past
-                .to(el, {
-                    x: () => section.offsetWidth - hWrap.clientWidth,
-                    duration: 1
-                })
-                // ...and reveal it from the top-left corner at the same time.
-                // inset(top right bottom left): 60% cut from right and bottom = 40% visible
-                .fromTo(el, {
-                    clipPath: "inset(0% 60% 60% 0%)"
-                }, {
-                    clipPath: "inset(0% 0% 0% 0%)",
-                    duration: 1
-                }, "<");
+            // Hold: counter-move so it stays in place while the section slides past.
+            // Must stay "left left" → "right right" — that's the exact scroll range
+            // the counter-move distance matches. Change it and the image drifts.
+            gsap.to(el, {
+                x: () => section.offsetWidth - hWrap.clientWidth,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: section,
+                    containerAnimation: slide,
+                    start: "left left",
+                    end: "right right",
+                    scrub: true,
+                    invalidateOnRefresh: true
+                }
+            });
+
+            // Reveal: its own trigger, so start/end/ease can be tuned freely
+            // without affecting the hold.
+            // inset(top right bottom left): 60% cut from right and bottom = 40% visible
+            gsap.fromTo(el, {
+                clipPath: "inset(0% 60% 60% 0%)"
+            }, {
+                clipPath: "inset(0% 0% 0% 0%)",
+                ease: "none",
+                scrollTrigger: {
+                    trigger: section,
+                    containerAnimation: slide,
+                    start: "left 40%",
+                    end: "right right",
+                    scrub: true,
+                    invalidateOnRefresh: true
+                }
+            });
         });
     });
 
