@@ -180,69 +180,39 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Lumos page margin (--site--margin) in px. It's a fluid clamp(), so
-        // measure it off a throwaway element instead of parsing the CSS.
-        const siteMargin = () => {
-            const probe = document.createElement("div");
-            probe.style.cssText = "position: absolute; visibility: hidden; width: var(--site--margin)";
-            hWrap.append(probe);
-            const margin = probe.getBoundingClientRect().width;
-            probe.remove();
-            return margin;
-        };
-
-        // Scales get revealed from the top-left corner (clip-path) as they slide
-        // in. If their section is wider than the screen (e.g. 200vw), they also
-        // hold at the left edge — the extra width is how long they stay held.
+        // Scales pin at the left edge, then get revealed from the top-left corner
+        // (clip-path, 40% → 100%) while pinned.
+        // Their section must be wider than the screen (e.g. 200vw) — the extra
+        // width is how long they stay pinned.
         hWrap.querySelectorAll('[data-hscroll="scale"]').forEach((el) => {
             const section = el.closest(".u-section");
 
-            // How much of the image shows before the reveal, in %
-            const visible = 40;
-
-            // Hold: counter-move so it stays in place while the section slides past.
-            // Must stay "left left" → "right right" — that's the exact scroll range
-            // the counter-move distance matches. Change it and the image drifts.
-            gsap.to(el, {
-                x: () => section.offsetWidth - hWrap.clientWidth,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    start: "left left",
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
-
-            // Reveal: starts once the visible part's right edge reaches the page's
-            // right margin, and finishes when the section lands at the right edge.
-            // Its own trigger, so it can be tuned without affecting the hold.
-            gsap.fromTo(el, {
-                // inset(top right bottom left): cut from right and bottom
-                clipPath: `inset(0% ${100 - visible}% ${100 - visible}% 0%)`
-            }, {
-                clipPath: "inset(0% 0% 0% 0%)",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    containerAnimation: slide,
-                    // "<px into the section> <px from the screen's left>"
-                    start: () => {
-                        // Image's left edge inside its section, minus the hold's shift
-                        const left = el.getBoundingClientRect().left
-                            - section.getBoundingClientRect().left
-                            - gsap.getProperty(el, "x");
-                        const visibleRight = left + el.offsetWidth * visible / 100;
-
-                        return `${visibleRight}px ${hWrap.clientWidth - siteMargin()}px`;
+            gsap.timeline({
+                    defaults: {
+                        ease: "none"
                     },
-                    end: "right right",
-                    scrub: true,
-                    invalidateOnRefresh: true
-                }
-            });
+                    scrollTrigger: {
+                        trigger: section,
+                        containerAnimation: slide,
+                        start: "left right",
+                        end: "right right",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                })
+                // Counter-move so it stays in place while the section slides past
+                .to(el, {
+                    x: () => section.offsetWidth - hWrap.clientWidth,
+                    duration: 1
+                })
+                // ...and reveal it from the top-left corner at the same time.
+                // inset(top right bottom left): 60% cut from right and bottom = 40% visible
+                .fromTo(el, {
+                    clipPath: "inset(0% 60% 60% 0%)"
+                }, {
+                    clipPath: "inset(0% 0% 0% 0%)",
+                    duration: 1
+                }, "<");
         });
     });
 
