@@ -12,6 +12,8 @@ window.addEventListener("DOMContentLoaded", () => {
     // --------------------------------------------------
 
     // Mirrors the Webflow breakpoints — keep these in sync with the designer.
+    // isTouch isn't a breakpoint: it's any device without hover and with a
+    // finger for a pointer (phones, tablets), whatever its width.
     // Use them anywhere below via mm.add(...), e.g.
     //
     //   mm.add(BREAKPOINTS, (ctx) => {
@@ -28,6 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
         isTablet: "(max-width: 991px) and (min-width: 768px)",
         isTabletUp: "(min-width: 768px)",
         isMobile: "(max-width: 767px)",
+        isTouch: "(hover: none) and (pointer: coarse)",
         reduceMotion: "(prefers-reduced-motion: reduce)"
     };
 
@@ -132,8 +135,8 @@ window.addEventListener("DOMContentLoaded", () => {
             }, 0);
 
         // 31.25% → 100%: the byline slides down and tilts out of the way.
-        // Not on mobile — there it just stays put.
-        if (!ctx.conditions.isMobile) {
+        // Not on touch devices — there it just stays put, at any screen size.
+        if (!ctx.conditions.isTouch) {
             tl.to(byline, {
                 yPercent: 150,
                 rotation: 10,
@@ -143,7 +146,8 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         // End of the timeline, where the byline finishes. Pinned so leaving the
-        // byline out on mobile doesn't stretch the logo shrink over more scroll.
+        // byline out on touch devices doesn't stretch the logo shrink over more
+        // scroll.
         tl.set({}, {}, 0.8);
     });
 
@@ -253,39 +257,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
             });
         });
-    });
-
-
-
-
-
-    // --------------------------------------------------
-    // FOOTER
-    // --------------------------------------------------
-
-    const footer = document.querySelector(".footer_section_complete");
-    const footerByline = document.querySelector('[data-byline="footer"]');
-
-    if (footer && footerByline) mm.add(BREAKPOINTS, (ctx) => {
-        // Not on mobile — there the byline just sits in place.
-        if (ctx.conditions.isMobile) return;
-
-        gsap.timeline({
-                scrollTrigger: {
-                    trigger: footer,
-                    // Fires when the top of the footer reaches the middle
-                    // of the viewport.
-                    start: "top center",
-                    toggleActions: "play none none reverse",
-                    invalidateOnRefresh: true
-                }
-            })
-            .from(footerByline, {
-                yPercent: 150,
-                rotation: 10,
-                ease: "power2.out",
-                duration: 1
-            });
     });
 
 
