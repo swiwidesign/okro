@@ -92,14 +92,14 @@ window.addEventListener("DOMContentLoaded", () => {
     const logo = document.querySelector('[data-logo="True"]');
     const hero = document.querySelector(".landing_hero_section");
 
-    if (logo && hero) {
+    if (logo && hero) mm.add(BREAKPOINTS, (ctx) => {
 
         // Scoped to the hero — there's a second .byline_wrap in the footer.
         const byline = hero.querySelector('[data-byline="hero"]');
 
-        // The timeline is 1 unit long, so every position and duration below
-        // reads straight off as a fraction of the hero scroll.
-        gsap.timeline({
+        // Scrubbed across the whole hero scroll. The timeline is pinned at
+        // 0.8 long (see the end), so 0.4 is halfway down the hero.
+        const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: hero,
                     start: "clamp(top top)",
@@ -107,7 +107,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     scrub: true
                 }
             })
-            // 0 → 50%: shrink from hero size into the nav slot. The values
+            // 0 → 62.5%: shrink from hero size into the nav slot. The values
             // here are the start — GSAP animates back to what .nav_logo_wrap says.
             .from(logo, {
                 width: "44rem",
@@ -115,15 +115,23 @@ window.addEventListener("DOMContentLoaded", () => {
                 yPercent: -65,
                 ease: "none",
                 duration: 0.5
-            }, 0)
-            // 15% → 70%: the byline slides down and tilts out of the way.
-            .to(byline, {
+            }, 0);
+
+        // 31.25% → 100%: the byline slides down and tilts out of the way.
+        // Not on mobile — there it just stays put.
+        if (!ctx.conditions.isMobile) {
+            tl.to(byline, {
                 yPercent: 150,
                 rotation: 10,
                 ease: "none",
                 duration: 0.55
             }, 0.25);
-    }
+        }
+
+        // End of the timeline, where the byline finishes. Pinned so leaving the
+        // byline out on mobile doesn't stretch the logo shrink over more scroll.
+        tl.set({}, {}, 0.8);
+    });
 
 
 
@@ -244,7 +252,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const footer = document.querySelector(".footer_section_complete");
     const footerByline = document.querySelector('[data-byline="footer"]');
 
-    if (footer && footerByline) {
+    if (footer && footerByline) mm.add(BREAKPOINTS, (ctx) => {
+        // Not on mobile — there the byline just sits in place.
+        if (ctx.conditions.isMobile) return;
 
         gsap.timeline({
                 scrollTrigger: {
@@ -262,7 +272,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 ease: "power2.out",
                 duration: 1
             });
-    }
+    });
 
 
     // --------------------------------------------------
