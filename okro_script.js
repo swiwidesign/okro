@@ -97,6 +97,18 @@ window.addEventListener("DOMContentLoaded", () => {
         // Scoped to the hero — there's a second .byline_wrap in the footer.
         const byline = hero.querySelector('[data-byline="hero"]');
 
+        // The logo's hero width: 44rem, as far as its max-width
+        // (calc(100% - 2 * var(--site--margin))) lets it get — on phones that's
+        // less. Starting any wider stalls the shrink until the tween catches up
+        // with the cap. Measured by letting CSS apply the cap for a moment.
+        const heroLogoWidth = () => {
+            const inline = logo.style.width;
+            logo.style.width = "44rem";
+            const width = parseFloat(getComputedStyle(logo).width);
+            logo.style.width = inline;
+            return width;
+        };
+
         // Scrubbed across the whole hero scroll. The timeline is pinned at
         // 0.8 long (see the end), so 0.4 is halfway down the hero.
         const tl = gsap.timeline({
@@ -104,13 +116,15 @@ window.addEventListener("DOMContentLoaded", () => {
                     trigger: hero,
                     start: "clamp(top top)",
                     end: "clamp(bottom top)",
-                    scrub: true
+                    scrub: true,
+                    // Re-measure the hero width when the screen size changes
+                    invalidateOnRefresh: true
                 }
             })
             // 0 → 62.5%: shrink from hero size into the nav slot. The values
             // here are the start — GSAP animates back to what .nav_logo_wrap says.
             .from(logo, {
-                width: "44rem",
+                width: heroLogoWidth,
                 top: "50%",
                 yPercent: -65,
                 ease: "none",
