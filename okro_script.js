@@ -242,7 +242,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 // e.g. start while it's still coming in, finish halfway through the hold.
                 // inset(top right bottom left): 60% cut from right and bottom = 40% visible
                 gsap.fromTo(el, {
-                    clipPath: "inset(0% 60% 60% 0%)"
+                    clipPath: "inset(0% 70% 70% 0%)"
                 }, {
                     clipPath: "inset(0% 0% 0% 0%)",
                     ease: "none",
